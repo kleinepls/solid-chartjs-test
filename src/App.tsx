@@ -9,7 +9,7 @@ import {
 import Chart, { type ChartItem, type ChartType } from "chart.js/auto";
 
 const App: Component = () => {
-  const [chart, setChart] = createSignal<Chart<"pie">>();
+  const [chart, setChart] = createSignal<Chart>();
   const [type, setType] = createSignal<ChartType>("pie");
   let canvasRef: HTMLCanvasElement;
 
