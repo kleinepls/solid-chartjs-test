@@ -6,10 +6,11 @@ import {
   onMount,
   createMemo,
 } from "solid-js";
-import Chart, { ChartItem } from "chart.js/auto";
+import Chart, { type ChartItem, type ChartType } from "chart.js/auto";
 
 const App: Component = () => {
   const [chart, setChart] = createSignal<Chart<"pie">>();
+  const [type, setType] = createSignal<ChartType>("pie");
   let canvasRef: HTMLCanvasElement;
 
   const [data, setData] = createSignal([
@@ -26,7 +27,7 @@ const App: Component = () => {
     const ctx = canvasRef?.getContext("2d") as ChartItem;
 
     const chart = new Chart(ctx, {
-      type: "pie",
+      type: type(),
       data: chartData(),
     });
 
@@ -56,6 +57,13 @@ const App: Component = () => {
     }),
   );
 
+  createEffect(
+    on(type, () => {
+      chart()?.destroy();
+      init();
+    }),
+  );
+
   const increaseData = () => {
     setData((data) =>
       data.concat([
@@ -67,21 +75,14 @@ const App: Component = () => {
     );
   };
 
+  const changeType = () => {
+    setType((type) => (type === "pie" ? "bar" : "pie"));
+  };
+
   return (
     <div style={{ width: "500px" }}>
-      <button
-        style={{
-          border: "none",
-          padding: "1rem",
-          "background-color": "lime",
-          "border-radius": "0.5rem",
-          "margin-block": "4rem",
-          "margin-inline": "auto",
-        }}
-        onClick={increaseData}
-      >
-        more data
-      </button>
+      <button onClick={increaseData}>more data</button>
+      <button onClick={changeType}>change type</button>
 
       <canvas id="acquisitions" ref={canvasRef!} />
     </div>
