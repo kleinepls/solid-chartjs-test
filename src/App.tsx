@@ -4,15 +4,12 @@ import {
   createEffect,
   on,
   onMount,
-  createComputed,
   createMemo,
 } from "solid-js";
 import Chart, { ChartItem } from "chart.js/auto";
 
 const App: Component = () => {
-  // eslint-disable-next-line
   const [chart, setChart] = createSignal<Chart<"pie">>();
-  // const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>();
   let canvasRef: HTMLCanvasElement;
 
   const [data, setData] = createSignal([
@@ -37,7 +34,6 @@ const App: Component = () => {
   };
 
   const chartData = createMemo(() => {
-    console.count("chartData");
     return {
       labels: data().map((row) => row.year),
       datasets: [
@@ -55,52 +51,12 @@ const App: Component = () => {
 
   createEffect(
     on(chartData, () => {
-      console.count("canvas");
       chart()!.data = chartData();
       chart()!.update();
-
-      // chart?.clear();
-
-      // chart = new Chart(canvasRef, {
-      //   type: "pie",
-      //   data: {
-      //     labels: data().map((row) => row.year),
-      //     datasets: [
-      //       {
-      //         label: "Acquisitions by year",
-      //         data: data().map((row) => row.count),
-      //       },
-      //     ],
-      //   },
-      // });
-
-      // chart.update();
     }),
   );
 
-  const labels = createMemo(() => data().map((row) => row.year));
-  const datasets = createMemo(() => data().map((row) => row.count));
-
-  // onMount(() => {
-  //   chart = new Chart(canvasRef, {
-  //     type: "pie",
-  //     data: {
-  //       labels: data().map((row) => row.year),
-  //       datasets: [
-  //         {
-  //           label: "Acquisitions by year",
-  //           data: data().map((row) => row.count),
-  //         },
-  //       ],
-  //     },
-  //   });
-  // });
-
   const increaseData = () => {
-    console.count();
-
-    // canvasRef.remove();
-
     setData((data) =>
       data.concat([
         { year: 2023, count: 4 },
@@ -109,7 +65,6 @@ const App: Component = () => {
         { year: 2026, count: 4 },
       ]),
     );
-    console.log(data());
   };
 
   return (
